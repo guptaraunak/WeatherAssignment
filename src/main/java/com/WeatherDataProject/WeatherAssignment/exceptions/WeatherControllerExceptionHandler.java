@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.context.request.WebRequest;
 
 @ControllerAdvice(basePackageClasses = WeatherController.class)
 public class WeatherControllerExceptionHandler {
@@ -39,4 +40,13 @@ public class WeatherControllerExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exceptionResponseDTO);
     }
 
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<ExceptionResponseDTO> handleGlobalException(Exception exception,
+                                                                      WebRequest webRequest) {
+        ExceptionResponseDTO errorResponseDTO = new ExceptionResponseDTO(
+                exception.getMessage(),HttpStatus.INTERNAL_SERVER_ERROR.value()
+
+        );
+        return new ResponseEntity<>(errorResponseDTO, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
 }
